@@ -9,7 +9,7 @@ We are committed to regularly updating our exploration directions and results in
 
 We warmly welcome contributions from the broader community—join us in pushing the boundaries of agent reasoning and tool integration!
 
-Code and dataset coming soon! Stay tuned!
+Code and dataset are now available! The `verl` submodule has been integrated for enhanced RL training capabilities.
 
 <div style="display: flex; justify-content: center;">
   <div style="width: 100; transform: scale(1.0);">
@@ -59,7 +59,7 @@ Code and dataset coming soon! Stay tuned!
 
 
 ## Current Team Members
-[@Kunlun Zhu](https://github.com/Kunlun-Zhu)(Ulab-UIUC), [@Jiayi Zhang](https://github.com/didiforgithub)(MetaGPT), [@Xinbing Liang](https://github.com/mannaandpoem),[@Xiangxin Zhou](https://github.com/zhouxiangxin1998), [@Yanfei Zhang](https://github.com/yanfei-zhang-95), [@Yingxuan Yang](https://github.com/zoe-yyx), [@Zeping Chen](https://github.com/rxdaozhang),[@Weijia Zhang](https://github.com/CharlieDreemur), [@Muxin Tian](https://github.com/realtmxi), [@Haofei Yu](https://github.com/lwaekfjlk)(Ulab-UIUC), [@Jinyu Xiang](https://github.com/XiangJinyu), [@Yifan Wu](https://github.com/Evanwu50020), [@Bowen Jin](https://github.com/PeterGriffinJin)
+[@Kunlun Zhu](https://github.com/Kunlun-Zhu)(Ulab-UIUC), [@Muxin Tian](https://github.com/realtmxi), [@Zijia Liu](https://m-serious.github.io/)(Ulab-UIUC), [@Yingxuan Yang](https://github.com/zoe-yyx),[@Jiayi Zhang](https://github.com/didiforgithub)(MetaGPT), [@Xinbing Liang](https://github.com/mannaandpoem), [@Weijia Zhang](https://github.com/CharlieDreemur), [@Haofei Yu](https://github.com/lwaekfjlk)(Ulab-UIUC), [@Cheng Qian](https://qiancheng0.github.io/),[@Bowen Jin](https://github.com/PeterGriffinJin), 
 
 ---
 
@@ -146,10 +146,17 @@ Agents are equipped with action-space awareness, employing systematic exploratio
 ### Integration with RL Tuning Frameworks
 We integrate insights and methodologies from leading RL tuning frameworks, including:
 
-- **Verl**
+- **Verl** - **Integrated as Git Submodule** - Our primary RL framework, providing advanced training capabilities for agent optimization
 - **TinyZero**
 - **OpenR1**
 - **Trlx**
+
+### Verl Integration
+The `verl` submodule is fully integrated into OpenManus-RL, providing:
+- **Advanced RL Algorithms** - PPO, DPO, and custom reward modeling
+- **Efficient Training** - Optimized for large language model fine-tuning
+- **Flexible Configuration** - Easy customization of training parameters
+- **Production Ready** - Battle-tested framework from Bytedance
 
 Through these frameworks, agents can effectively balance exploration and exploitation, optimize reasoning processes, and adapt dynamically to novel environments.
 
@@ -208,6 +215,18 @@ We are still laboriously developing this part, welcome feedback.
 
 ## Installation
 
+### Prerequisites
+This project uses git submodules. After cloning the repository, make sure to initialize and update the submodules:
+
+```bash
+# Clone the repository with submodules
+git clone --recursive https://github.com/OpenManus/OpenManus-RL.git
+
+# Or if already cloned, initialize and update submodules
+git submodule update --init --recursive
+```
+
+### Environment Setup
 First, create a conda environment and activate it:
 
 ```bash
@@ -234,50 +253,50 @@ pip install wandb
 
 ## Environment Setup
 
-### WebShop Environment Setup as an example, more environment could be found on the agentgym
-
+### 1. Webshop
 To set up the WebShop environment for evaluation:
 
 ```bash
 # Change to the agentenv-webshop directory
-cd agentenv-webshop
+cd openmanus_rl/environments/env_package/webshop/webshop/
 
 # Create a new conda environment for WebShop
-conda env create -n webshop -f environment.yml
-conda activate webshop
+conda create -n agentenv_webshop python==3.10 -y
+conda activate agentenv_webshop
 
 # Setup the environment
-bash ./setup.sh
+bash ./setup.sh -d all
 ```
 
-### Launching the WebShop Server
-
-After setting up the environment, you can launch the WebShop server:
+### 2. ALFWorld
 
 ```bash
-# Make sure the webshop conda environment is activated
-conda activate webshop
-
-# Launch the server (default port: 36001)
-webshop --port 36001
+conda acitvate openmanus-rl
+pip3 install gymnasium==0.29.1
+pip3 install stable-baselines3==2.6.0
+pip install alfworld
 ```
 
-Note: The WebShop environment requires specific versions of Python, PyTorch, Faiss, and Java. The setup script will handle these dependencies automatically.
+Download PDDL & Game files and pre-trained MskRCNN detector (will be stored in `~/.cache/alfworld/`):
+```
+alfworld-download -f
+```
+Use `--extra` to download pre-trained checkpoints and seq2seq data.
 
-## Quick start
+## Quick Start
 
-Train a reasoning + search LLM on NQ dataset with e5 as the retriever and wikipedia as the corpus.
+### 1. Environment Setup
+Make sure you have the required environments set up (see Environment Setup section above).
 
-(1) Download the indexing and corpus.
+### 2. Data Preparation
+Download the OpenManus-RL dataset from [Hugging Face](https://huggingface.co/datasets/CharlieDreemur/OpenManus-RL).
 
-From https://huggingface.co/datasets/CharlieDreemur/OpenManus-RL
+### 3. Training Examples
 
-(3) Launch a local AgentGym server.
-
-(4) Run RL training (PPO) with Llama-3.2-3b-base.
+#### ALFWorld RL Training (PPO)
 ```bash
 conda activate openmanus-rl
-bash train_ppo.sh
+bash scripts/ppo_train/train_alfworld.sh
 ```
 
 
@@ -310,24 +329,27 @@ bash train_ppo.sh
 2. **Deepseekmath: Pushing the Limits of Mathematical Reasoning in Open Language Models**. [[paper](https://proceedings.neurips.cc/paper_files/paper/2022/file/b1efde53be364a73914f58805a001731-Paper-Conference.pdf)]
 3. **DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning**. [[paper](https://arxiv.org/pdf/2501.12948)]
 
-## **Benchmark:**
+## Benchmark:
 
 1. **AgentBench: Evaluating LLMs as Agents**. [paper](https://arxiv.org/abs/2308.03688)
-2. **OSWorld: Benchmarking Multimodal Agents for Open-Ended Tasks in Real Computer Environments**. [paper](https://arxiv.org/abs/2404.07972)
-3. **AndroidWorld: A Dynamic Benchmarking Environment for Autonomous Agents**. [paper](https://openreview.net/forum?id=il5yUQsrjC)
-4. **WebShop: Towards Scalable Real-World Web Interaction with Autonomous Agents**. [paper](https://arxiv.org/pdf/2207.01206)
-5. **GAIA: a benchmark for General AI Assistants**. [paper](https://arxiv.org/abs/2311.12983)
-6. **TheAgentCompany: Benchmarking LLM Agents on Consequential Real World Tasks**. [paper](https://arxiv.org/abs/2412.14161)
+2. **WebShop: Towards Scalable Real-World Web Interaction with Autonomous Agents**. [paper](https://arxiv.org/pdf/2207.01206)
+3. **GAIA: a benchmark for General AI Assistants**. [paper](https://arxiv.org/abs/2311.12983)
+4. **ALFWorld: Aligning Text and Embodied Environments for Interactive Learning**. [paper](https://arxiv.org/abs/2010.03768)
 
-
-## Similar Code
+## Similar framework
 
 1. **RAGEN: Training Agents by Reinforcing Reasoning**. [[code](https://github.com/ZihanWang314/RAGEN)]
+2. **verl-agent**. [[code](https://github.com/langfengQ/verl-agent)]
+
+## Offline RL
+1. **D4RL: Datasets for Deep Data-Drive Reinforcement Learning**. [[paper](https://arxiv.org/abs/2004.07219)]
+2. **Offline Reforcement Learning with Implicit Q-Learning**. [[paper](https://arxiv.org/abs/2110.06169)]
+3. **Behavior Proximal Policy Optimization**. [[paper](https://arxiv.org/abs/2302.11312)]
 
 # Acknowledgement
 We extend our thanks to ulab-uiuc (https://ulab-uiuc.github.io/) and Openmanus (https://github.com/mannaandpoem/OpenManus)) team from MetaGPT for their support and shared knowledge. Their mission and community contributions help drive innovations like OpenManus forward.
 
-We also want to thank AgentGym(https://agentgym.github.io/) and Verl (https://github.com/volcengine/verl) for their opensource.
+We also want to gratefully thank Verl (https://github.com/volcengine/verl) and verl-agent(https://github.com/langfengQ/verl-agent) for their opensource.
 
 We welcome all developers who are interested in this project can reach out to (kunlunz2@illinois.edu)
 
@@ -362,6 +384,19 @@ Please cite the following paper if you find OpenManus helpful!
   </picture>
 </a>
 </p>
+
+## Project Structure
+
+```
+OpenManus-RL/
+├── verl/                    # Verl RL framework submodule
+├── openmanus_rl/           # Main OpenManus-RL library
+├── scripts/                # Training and evaluation scripts
+├── configs/                # Configuration files
+├── environments/           # Agent environment implementations
+├── docs/                   # Documentation
+└── examples/               # Usage examples
+```
 
 ## Documentation
 - [Development Guide (English)](docs/DEVELOPMENT_GUIDE_EN.md)

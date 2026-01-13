@@ -32,3 +32,12 @@ logs/
 verl_checkpoints
 verl_checkpoints/
 verl.egg-info/
+
+test_memory.md
+
+trajectories/
+results_*/
+nohup_logs_*/
+
+AGENTS.md
+CLAUDE.md
